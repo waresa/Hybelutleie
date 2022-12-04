@@ -1,6 +1,7 @@
     </div>
+
     </body>
 
     </html>
 
-    <script src="js/script1.js"></script>
+    <script src="js/script12.js"></script>
