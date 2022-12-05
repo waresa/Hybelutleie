@@ -18,48 +18,25 @@ if (isset($_POST["submit"])) {
     $to_user = $_POST["toid"];
     $ad_id = $_POST["adid"];
 
+    // get receiver email and id
     $tid = getUserId($conn, $to_user);
     $to_id = $tid['usersid'];
     $umail = getUser($conn, $to_id);
     $to_email = $umail['usersEmail'];
 
+    //get receiver notif 
+    $notif = $umail['notif'];
+
+    //if receiver is not the same as sender
     if ($user_id != $to_id) {
         insertInbox($conn, $user_id, $to_user, $ad_id);
         insertInbox($conn, $to_id, $from_id, $ad_id);
         sendMessage($conn, $message, $from_id, $to_user, $ad_id);
 
-        //send message via email
-
-        // $mail = new PHPMailer\PHPMailer\PHPMailer();
-
-        // $output = '';
-
-        // try {
-        //     $mail->isSMTP();
-        //     $mail->Host = 'smtp.gmail.com';
-        //     $mail->SMTPAuth = true;
-        //     // Gmail which you want to use as SMTP server
-        //     $mail->Username = 'waris.aslami2@gmail.com';
-        //     // Gmail Password
-        //     $mail->Password = 'bryacazwdzovpopf';
-        //     $mail->Port = 587;
-
-        //     // email from which you want to send the email
-        //     $mail->setFrom($user_email, $from_id);
-        //     // Recipient Email
-        //     $mail->addAddress($to_email);
-
-        //     $mail->isHTML(true);
-        //     $mail->Subject = "Test";
-        //     $mail->Body = "This is a test email";
-
-        //     $mail->send();
-        //     $output = 'Sent';
-        // } catch (Exception $e) {
-        //     $output = '<div class="alert alert-danger">
-        //               <h5>' . $e->getMessage() . '</h5>
-        //             </div>';
-        // }
+        // // //send message via email if
+        if ($notif == 1) {
+            require 'sendmail.inc.php';
+        }
     }
     header("location: ../msgs.php?from=$to_user&ad_id=$ad_id");
 } else {

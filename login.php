@@ -3,10 +3,12 @@ include_once 'header.php';
 ?>
 
 <section class="signup-form">
-  <h2>Logg Inn</h2>
+  <h2 class="hvdg">Logg Inn</h2>
   <div class="signup-form-form">
     <form action="includes/login.inc.php" method="post">
+      <label for="email">E-post</label>
       <input type="text" name="email" placeholder="Email">
+      <label for="pwd">Passord</label>
       <input type="password" name="pwd" placeholder="Passord">
       <button type="submit" name="submit">Logg inn</button>
     </form>

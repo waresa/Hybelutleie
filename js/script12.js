@@ -21,6 +21,7 @@ for (let i = 0; i < getNav.length; i++) {
 }
 
 
+
 // var address = <?php echo (json_encode($address)); ?>;
 // mapboxgl.accessToken = 'pk.eyJ1Ijoid2FyZXNhIiwiYSI6ImNsYXRvaW9jMzAyOHkzcm55M291emFzMnEifQ.V02tpKc9ruk40khemdFumQ';
 // const mapboxClient = mapboxSdk({

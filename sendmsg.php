@@ -26,7 +26,7 @@ $ad_id = $_GET['ad_id'];
         <div class='productprice'>" . $row['leie'] . " kr" . "</div>" . "</div>" . "</a>";
         ?>
     </div>
-    <div class="block2">
+    <div class="block2" id="msgb2">
         <div class="signup-form-form">
             <form action="includes/sendmsg.inc.php" method="post">
                 <label for="msg">Meldingen:</label>

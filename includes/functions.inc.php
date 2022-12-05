@@ -56,20 +56,52 @@ function emailExists($conn, $email)
 }
 
 // Insert new user into database
-function createUser($conn, $name, $email, $pwd)
+function createUser($conn, $name, $email, $pwd, $notif)
 {
-	$sql = "INSERT INTO users (usersName, usersEmail, usersPwd) VALUES (?, ?, ?);";
+	$sql = "INSERT INTO users (usersName, usersEmail, usersPwd, notif) VALUES (?, ?, ?, ?);";
 
 	$stmt = mysqli_stmt_init($conn);
 	mysqli_stmt_prepare($stmt, $sql);
 
 	$hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
 
-	mysqli_stmt_bind_param($stmt, "sss", $name, $email, $hashedPwd);
+	mysqli_stmt_bind_param($stmt, "ssss", $name, $email, $hashedPwd, $notif);
 	mysqli_stmt_execute($stmt);
-	header("location: ../signup.php?error=none");
-	exit();
+	// header("location: ../login.php?error=none");
 }
+
+
+//edit user 
+function editUser($conn, $name, $email, $pwd, $notif, $user_id)
+{
+	$sql = "UPDATE users SET usersName = ?, usersEmail = ?, usersPwd = ?, notif = ? WHERE usersId = ?;";
+	$stmt = mysqli_stmt_init($conn);
+	mysqli_stmt_prepare($stmt, $sql);
+	$hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
+	mysqli_stmt_bind_param($stmt, "sssss", $name, $email, $hashedPwd, $notif, $user_id);
+	mysqli_stmt_execute($stmt);
+}
+
+// change user email
+function deleteEmail($conn, $user_id)
+{
+	$sql = "UPDATE users SET usersEmail = '' WHERE usersId = ?;";
+	$stmt = mysqli_stmt_init($conn);
+	mysqli_stmt_prepare($stmt, $sql);
+	mysqli_stmt_bind_param($stmt, "s", $user_id);
+	mysqli_stmt_execute($stmt);
+}
+
+function changeEmail($conn, $email, $user_id)
+{
+	$sql = "UPDATE users SET usersEmail = ? WHERE usersId = ?;";
+	$stmt = mysqli_stmt_init($conn);
+	mysqli_stmt_prepare($stmt, $sql);
+	mysqli_stmt_bind_param($stmt, "ss", $email, $user_id);
+	mysqli_stmt_execute($stmt);
+}
+
+
 
 // Check for empty input login
 function emptyInputLogin($email, $pwd)
@@ -179,6 +211,42 @@ function addFacilities($conn, $facilities)
 	mysqli_stmt_bind_param($stmt, "s", $facilities);
 	mysqli_stmt_execute($stmt);
 }
+
+function createRenter($conn, $fname, $age, $budget, $leiefra, $wants, $info, $usersId)
+{
+	$sql = "INSERT INTO renters (fname, age, budget, leiefra, wants, info, usersId) VALUES (?, ?, ?, ?, ?, ?, ?);";
+	$stmt = mysqli_stmt_init($conn);
+	mysqli_stmt_prepare($stmt, $sql);
+	mysqli_stmt_bind_param($stmt, "sssssss", $fname, $age, $budget, $leiefra, $wants, $info, $usersId);
+	mysqli_stmt_execute($stmt);
+}
+
+function editRenter($conn, $fname, $age, $budget, $leiefra, $wants, $info, $user_id)
+{
+	$sql = "UPDATE renters SET fname = ?, age = ?, budget = ?, leiefra = ?, wants = ?, info = ? WHERE usersId = ?;";
+	$stmt = mysqli_stmt_init($conn);
+	mysqli_stmt_prepare($stmt, $sql);
+	mysqli_stmt_bind_param($stmt, "sssssss", $fname, $age, $budget, $leiefra, $wants, $info, $user_id);
+	mysqli_stmt_execute($stmt);
+}
+
+function getRenter($conn, $user_id)
+{
+	$sql = "SELECT * FROM renters WHERE usersId = ?;";
+	$stmt = mysqli_stmt_init($conn);
+	mysqli_stmt_prepare($stmt, $sql);
+
+	mysqli_stmt_bind_param($stmt, "s", $user_id);
+	mysqli_stmt_execute($stmt);
+	$resultData = mysqli_stmt_get_result($stmt);
+	if ($row = mysqli_fetch_assoc($resultData)) {
+		return $row;
+	} else {
+		$result = false;
+		return $result;
+	}
+}
+
 
 // function to get specific ad
 function getAd($conn, $ad_id)
@@ -301,7 +369,7 @@ function getUserAd($conn, $user_id)
 }
 
 
-function uploadImg($conn, $files, $ad_id)
+function uploadAdImgs($conn, $files, $ad_id)
 {
 	$ins = 0;
 	foreach ($files['upload']['name'] as $key => $name) {

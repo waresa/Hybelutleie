@@ -5,34 +5,37 @@ include_once 'header.php';
 ?>
 
 <section class="index-categories" id="categories">
-  <h2>Categories</h2>
+  <h2 class="hvdg">Hva vil du gjøre?</h2>
   <div class="index-categories-list">
 
-    <div>
+    <div class="ctg">
       <a href="adlist.php">
-        <h3>
-          Annonser
-        </h3>
+        <button type="submit" name="submit">Annonser</button>
       </a>
     </div>
 
-    <div>
+    <div class="ctg">
       <a href="myads.php">
         <h3>
-          Mine Annonser
+          <button type="submit" name="submit">Mine Annonser</button>
         </h3>
       </a>
     </div>
 
-    <div>
+    <div class="ctg">
       <a href="createad.php">
         <h3>
-          Lag annonse
+          <button type="submit" name="submit">Lag Annonse</button>
         </h3>
       </a>
     </div>
-    <div>
-      <h3>Category 4</h3>
+
+    <div class="ctg">
+      <a href="createrenter.php">
+        <h3>
+          <button type="submit" name="submit">Leietaker Profil</button>
+        </h3>
+      </a>
     </div>
   </div>
 </section>

@@ -11,8 +11,9 @@ include 'includes/dbh.inc.php';
 
         <section id="message">
 
-            <div class="message-sent2">
+            <div class="message-sent2" id="messagebody">
                 <div id="sendername"><?php echo $_GET['from']; ?></div>
+                <hr style="width: 99%;">
 
                 <?php
                 $ad_id = $_GET['ad_id'];
@@ -25,7 +26,7 @@ include 'includes/dbh.inc.php';
                 ";
 
                 ?>
-
+                <hr style="width: 99%;">
 
 
                 <?php
@@ -70,35 +71,35 @@ include 'includes/dbh.inc.php';
                 ?>
 
                 <hr style="border-top: 1px;">
-
-                <div class="message-form-form">
-                    <form action="includes/sendmsg.inc.php" method="post">
-                        <label for="msg">Skriv:</label>
-                        <textarea name="message" id="msg" cols="40" rows="1"></textarea>
-                        <input type="text" name="toid" id="" value="<?php echo $sender; ?>" style="display: none;">
-                        <button type="submit" class="snd" name="submit">Send</button>
-                        <input type="text" name="adid" value="<?php echo $ad_id ?>" style="display:none;">
-                    </form>
-                </div>
-                <?php
-                // Error messages
-                if (isset($_GET["error"])) {
-                    if ($_GET["error"] == "emptyinput") {
-                        echo "<p>Fyll ut alle feltene!</p>";
-                    } else if ($_GET["error"] == "invalidemail") {
-                        echo "<p>Skriv in riktig email!</p>";
-                    } else if ($_GET["error"] == "passwordsdontmatch") {
-                        echo "<p>Passord matcher ikke!</p>";
-                    } else if ($_GET["error"] == "stmtfailed") {
-                        echo "<p>Noe gikk galt!</p>";
-                    } else if ($_GET["error"] == "emailtaken") {
-                        echo "<p>Email er allerede registrert!</p>";
-                    } else if ($_GET["error"] == "none") {
-                        echo "<p>Du er noe registrert!</p>";
-                    }
-                }
-                ?>
             </div>
+            <div class="message-form-form">
+                <form action="includes/sendmsg.inc.php" method="post">
+                    <label for="msg">Skriv:</label>
+                    <textarea name="message" id="msg" cols="40" rows="1"></textarea>
+                    <input type="text" name="toid" id="" value="<?php echo $sender; ?>" style="display: none;">
+                    <button type="submit" class="snd" name="submit">Send</button>
+                    <input type="text" name="adid" value="<?php echo $ad_id ?>" style="display:none;">
+                </form>
+            </div>
+            <?php
+            // Error messages
+            if (isset($_GET["error"])) {
+                if ($_GET["error"] == "emptyinput") {
+                    echo "<p>Fyll ut alle feltene!</p>";
+                } else if ($_GET["error"] == "invalidemail") {
+                    echo "<p>Skriv in riktig email!</p>";
+                } else if ($_GET["error"] == "passwordsdontmatch") {
+                    echo "<p>Passord matcher ikke!</p>";
+                } else if ($_GET["error"] == "stmtfailed") {
+                    echo "<p>Noe gikk galt!</p>";
+                } else if ($_GET["error"] == "emailtaken") {
+                    echo "<p>Email er allerede registrert!</p>";
+                } else if ($_GET["error"] == "none") {
+                    echo "<p>Du er noe registrert!</p>";
+                }
+            }
+            ?>
+
 
         </section>
 

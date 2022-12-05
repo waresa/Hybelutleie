@@ -29,7 +29,7 @@ if (isset($_POST["submit"])) {
 
     $ad_id = getLastAd($conn);
 
-    uploadImg($conn, $_FILES, $ad_id);
+    uploadAdImgs($conn, $_FILES, $ad_id);
 } else {
     header("location: ../signup.php");
     exit();

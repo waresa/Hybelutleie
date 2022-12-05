@@ -11,7 +11,7 @@ if ($inx !== false) {
         $ad_id = $inx[$i][2];
         $ad = getAd($conn, $ad_id);
         $adt = $ad['title'];
-        $ad_title = substr($adt, 0, 50);
+        $ad_title = substr($adt, 0, 30);
 
         echo "
     <a class='msg' id='msg' href= 'msgs.php?from=$sender&ad_id=$ad_id'>

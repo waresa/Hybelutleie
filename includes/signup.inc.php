@@ -5,9 +5,9 @@ if (isset($_POST["submit"])) {
   // First we get the form data from the URL
   $name = $_POST["name"];
   $email = $_POST["email"];
-  $username = $_POST["uid"];
   $pwd = $_POST["pwd"];
   $pwdRepeat = $_POST["pwdrepeat"];
+  $notif = $_POST["notif"];
 
   // Then we run a bunch of error handlers to catch any user mistakes we can (you can add more than I did)
   // These functions can be found in functions.inc.php
@@ -41,7 +41,8 @@ if (isset($_POST["submit"])) {
   // If we get to here, it means there are no user errors
 
   // Now we insert the user into the database
-  createUser($conn, $name, $email, $pwd);
+  createUser($conn, $name, $email, $pwd, $notif);
+  header("location: ../login.php?error=none");
 } else {
   header("location: ../signup.php");
   exit();

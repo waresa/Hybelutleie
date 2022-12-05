@@ -2,18 +2,15 @@
 include 'header.php';
 include 'includes/dbh.inc.php';
 
+
 ?>
-
-
-
-
 <div class="content">
     <div class="container">
 
         <section id="message">
 
             <div class="message-sent2">
-                <p style="text-align: center ;">Meldinger</p>
+                <h2 class="hvdg">Meldinger</h2>
                 <?php
 
                 require 'includes/inbox.inc.php';

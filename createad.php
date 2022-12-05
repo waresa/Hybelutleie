@@ -6,11 +6,11 @@ if (!isset($_SESSION['userid'])) {
 ?>
 
 <section class="signup-form" id="createad">
-    <h2>Lag ny annonse</h2>
+    <h2 class="hvdg">Lag ny annonse</h2>
     <div class="signup-form-form">
         <form action="includes/createad.inc.php" method="post" enctype="multipart/form-data">
             <label for="upl">Last opp bilder for annonsen: </label>
-            <input type="file" name="upload[]" id="upl" multiple required>
+            <input type="file" name="upload[]" id="upl" accept="image/*" multiple required>
             <label for="title">Tittel</label>
             <input type="text" name="title" placeholder="Tittel" required>
             <label for="leie">Månedsleie</label>
@@ -45,20 +45,22 @@ if (!isset($_SESSION['userid'])) {
             <input type="date" name="ledigfra" placeholder="Ledig fra: ">
             <fieldset>
                 <legend>Fasiliteter</legend>
-                <input type="checkbox" name="fasiliteter[]" value="Møbler">
                 <label for="Møbler">Møbler</label>
-                <input type="checkbox" name="fasiliteter[]" value="Hvitevarer">
+                <input type="checkbox" name="fasiliteter[]" value="Møbler">
                 <label for="Hvitevarer">Hvitevarer</label>
-                <input type="checkbox" name="fasiliteter[]" value="Balkong">
+                <input type="checkbox" name="fasiliteter[]" value="Hvitevarer">
                 <label for="Balkong">Balkong</label>
-                <input type="checkbox" name="fasiliteter[]" value="Terrasse">
+                <input type="checkbox" name="fasiliteter[]" value="Balkong">
                 <label for="Terrasse">Terrasse</label>
-                <input type="checkbox" name="fasiliteter[]" value="Parkering">
+                <input type="checkbox" name="fasiliteter[]" value="Terrasse">
                 <label for="Parkering">Parkering</label>
-                <input type="checkbox" name="fasiliteter[]" value="Husdyr tillatt">
+                <input type="checkbox" name="fasiliteter[]" value="Parkering">
                 <label for="Husdyr tillatt">Husdyr tillatt</label>
-                <input type="checkbox" name="fasiliteter[]" value="Røyking tillatt">
+                <input type="checkbox" name="fasiliteter[]" value="Husdyr tillatt">
                 <label for="Røyking tillatt">Røyking tillatt</label>
+                <input type="checkbox" name="fasiliteter[]" value="Røyking tillatt">
+                <input type="hidden" name="fasiliteter[]" value="Ikke oppitt">
+
             </fieldset>
             <label for="info">Om boligen: </label>
             <textarea name="info" id="info" cols="33" rows="10"></textarea>

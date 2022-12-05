@@ -3,14 +3,21 @@ include_once 'header.php';
 ?>
 
 <section class="signup-form">
-  <h2>Registrer deg selv</h2>
+  <h2 class="hvdg">Registrer deg selv</h2>
   <div class="signup-form-form">
     <form action="includes/signup.inc.php" method="post">
-      <input type="text" name="name" placeholder="Fult Navn">
+      <label for="name">Brukernavn</label>
+      <input type="text" name="name" placeholder="Brukernavn">
+      <label for="email">E-post</label>
       <input type="text" name="email" placeholder="Email">
+      <label for="pwd">Passord</label>
       <input type="password" name="pwd" placeholder="Passord">
+      <label for="pwd-repeat">Gjenta passord</label>
       <input type="password" name="pwdrepeat" placeholder="Gjenta Passord">
-      <button type="submit" name="submit">Sign up</button>
+      <label for="notif">Varslinger</label>
+      <input type="hidden" name="notif" value="0">
+      <input type="checkbox" name="notif" value="1" checked>
+      <button type="submit" name="submit">Lag konto</button>
     </form>
   </div>
   <?php
@@ -27,7 +34,7 @@ include_once 'header.php';
     } else if ($_GET["error"] == "emailtaken") {
       echo "<p>Email er allerede registrert!</p>";
     } else if ($_GET["error"] == "none") {
-      echo "<p>Du er noe registrert!</p>";
+      echo "<p>Du er nå registrert!</p>";
     }
   }
   ?>
