@@ -20,14 +20,8 @@ $info = $renter['info'];
     <h2 class="hvdg">Rediger leietaker-profil</h2>
     <div class="signup-form-form">
         <form action="includes/editrenter.inc.php" method="post" enctype="multipart/form-data">
-            <label for="fname">Fult Navn</label>
-            <input type="text" name="fname" placeholder="Ole Nordmann" required value="<?php echo $fname; ?>">
-            <label for="age">Alder</label>
-            <input type="number" name="age" placeholder="21" value="<?php echo $age ?>">
             <label for=" budget">Budsjett</label>
             <input type="number" name="budget" placeholder="Budsjett" value="<?php echo $budget ?>">
-            <label for=" leiefra">Leie fra</label>
-            <input type="date" name="leiefra" placeholder="" value="<?php echo $leiefra ?>">
             <fieldset>
                 <legend>Ønsket fasiliteter</legend>
                 <label for=" Møbler">Møbler</label>
@@ -47,9 +41,7 @@ $info = $renter['info'];
                 <input type="hidden" name="fasiliteter[]" value="0">
 
             </fieldset>
-            <label for="info">Om deg: </label>
-            <textarea name="info" id="info" cols="33" rows="10"><?php echo $info ?></textarea>
-            <button type="submit" name="submit">Legg ut</button>
+            <button type="submit" name="submit">Rediger</button>
         </form>
     </div>
     <?php

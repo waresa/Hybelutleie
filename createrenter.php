@@ -9,14 +9,8 @@ if (!isset($_SESSION['userid'])) {
     <h2 class="hvdg">Ny leietaker-profil</h2>
     <div class="signup-form-form">
         <form action="includes/createrenter.inc.php" method="post" enctype="multipart/form-data">
-            <label for="fname">Fult Navn</label>
-            <input type="text" name="fname" placeholder="Ole Nordmann" required>
-            <label for="age">Alder</label>
-            <input type="number" name="age" placeholder="21">
             <label for="budget">Budsjett</label>
             <input type="number" name="budget" placeholder="Budsjett">
-            <label for="leiefra">Leie fra</label>
-            <input type="date" name="leiefra" placeholder="">
             <fieldset>
                 <legend>Ønsket fasiliteter</legend>
                 <label for="Møbler">Møbler</label>
@@ -34,10 +28,8 @@ if (!isset($_SESSION['userid'])) {
                 <label for="Røyking tillatt">Røyking tillatt</label>
                 <input type="checkbox" name="fasiliteter[]" value="Røyking tillatt">
                 <input type="hidden" name="fasiliteter[]" value=" ">
-
             </fieldset>
-            <label for="info">Om deg: </label>
-            <textarea name="info" id="info" cols="33" rows="10"></textarea>
+
             <button type="submit" name="submit">Legg ut</button>
         </form>
     </div>

@@ -212,21 +212,21 @@ function addFacilities($conn, $facilities)
 	mysqli_stmt_execute($stmt);
 }
 
-function createRenter($conn, $fname, $age, $budget, $leiefra, $wants, $info, $usersId)
+function createRenter($conn, $budget, $wants, $usersId)
 {
-	$sql = "INSERT INTO renters (fname, age, budget, leiefra, wants, info, usersId) VALUES (?, ?, ?, ?, ?, ?, ?);";
+	$sql = "INSERT IGNORE INTO renters (budget, wants, usersId) VALUES (?, ?, ?);";
 	$stmt = mysqli_stmt_init($conn);
 	mysqli_stmt_prepare($stmt, $sql);
-	mysqli_stmt_bind_param($stmt, "sssssss", $fname, $age, $budget, $leiefra, $wants, $info, $usersId);
+	mysqli_stmt_bind_param($stmt, "sss", $budget, $wants, $usersId);
 	mysqli_stmt_execute($stmt);
 }
 
-function editRenter($conn, $fname, $age, $budget, $leiefra, $wants, $info, $user_id)
+function editRenter($conn, $budget, $wants, $user_id)
 {
-	$sql = "UPDATE renters SET fname = ?, age = ?, budget = ?, leiefra = ?, wants = ?, info = ? WHERE usersId = ?;";
+	$sql = "UPDATE renters SET budget = ?, wants = ? WHERE usersId = ?;";
 	$stmt = mysqli_stmt_init($conn);
 	mysqli_stmt_prepare($stmt, $sql);
-	mysqli_stmt_bind_param($stmt, "sssssss", $fname, $age, $budget, $leiefra, $wants, $info, $user_id);
+	mysqli_stmt_bind_param($stmt, "sss", $budget, $wants, $user_id);
 	mysqli_stmt_execute($stmt);
 }
 
@@ -263,6 +263,15 @@ function getAd($conn, $ad_id)
 		$result = false;
 		return $result;
 	}
+}
+
+function deleteAd($conn, $ad_id)
+{
+	$sql = "DELETE FROM ad WHERE ad_id = ?;";
+	$stmt = mysqli_stmt_init($conn);
+	mysqli_stmt_prepare($stmt, $sql);
+	mysqli_stmt_bind_param($stmt, "s", $ad_id);
+	mysqli_stmt_execute($stmt);
 }
 
 function isMyAd($conn, $ad_id, $usersId)

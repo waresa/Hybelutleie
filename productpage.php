@@ -97,6 +97,11 @@ if (!in_array($ad_id, $ads)) {
                 <a class="kntkt" <?php if (isset($_SESSION['userid'])) { ?> href="editad.php?ad_id=<?php echo $ad_id; ?>"> <?php }
                                                                                                                             ?> Rediger
                 </a>
+                <form action="includes/deletead.inc.php" method="post" enctype="multipart/form-data">
+                    <button type="submit" name="submit">Slett Annonse</button>
+                    <input type="hidden" name="ad_id" value="<?php echo $ad_id; ?>">
+                </form>
+
             </div>
 
         <?php
