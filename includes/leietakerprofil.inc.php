@@ -13,7 +13,16 @@ if (isset($_POST["submit"])) {
 
     $usersId = $_SESSION['userid'];
 
-    createRenter($conn, $budget, $wants, $usersId);
+    $notif = $_POST["notif"];
+
+    $doesNotHaveProfile = getRenter($conn, $usersId);
+    if ($doesNotHaveProfile != false) {
+        editRenter($conn, $budget, $wants, $usersId);
+    } else {
+        createRenter($conn, $budget, $wants, $usersId);
+    }
+    changeNotif($conn, $notif, $usersId);
+    header("location: ../leietakerprofil.php?error=none");
 } else {
     header("location: ../signup.php");
     exit();

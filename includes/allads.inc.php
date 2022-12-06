@@ -1,6 +1,7 @@
 
 <?php
-$sql = "SELECT * FROM ad order by ad_id desc";
+//This file is used to get all ads from the database 
+$sql = "SELECT * FROM ad where isDeleted = 0 order by ad_id desc";
 $result = mysqli_query($conn, $sql);
 $resultCheck = mysqli_num_rows($result);
 

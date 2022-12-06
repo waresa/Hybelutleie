@@ -1,4 +1,4 @@
-<!--Splitting the header and footer into separate documents makes things easier!-->
+<!-- The home page -->
 <?php
 include_once 'header.php';
 
@@ -31,7 +31,7 @@ include_once 'header.php';
     </div>
 
     <div class="ctg">
-      <a href="createrenter.php">
+      <a href="leietakerprofil.php">
         <h3>
           <button type="submit" name="submit">Leietaker Profil</button>
         </h3>

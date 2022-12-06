@@ -2,7 +2,7 @@
 
 if (isset($_POST["submit"])) {
 
-  // First we get the form data from the URL
+  // First we get the form data from the POST
   $email = $_POST["email"];
   $pwd = $_POST["pwd"];
 

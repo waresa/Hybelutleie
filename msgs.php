@@ -1,6 +1,11 @@
 <?php
 include 'header.php';
 include 'includes/dbh.inc.php';
+
+//if user is not logged in, ask them to log in
+if (!isset($_SESSION['userid'])) {
+    header("Location:login.php");
+}
 ?>
 
 
@@ -12,10 +17,12 @@ include 'includes/dbh.inc.php';
         <section id="message">
 
             <div class="message-sent2" id="messagebody">
+                <!-- get the message sender name from url and display it -->
                 <div id="sendername"><?php echo $_GET['from']; ?></div>
                 <hr style="width: 99%;">
 
                 <?php
+                //get the ad title and display it
                 $ad_id = $_GET['ad_id'];
                 $ad = getAd($conn, $ad_id);
                 $adt = $ad['title'];
@@ -30,12 +37,15 @@ include 'includes/dbh.inc.php';
 
 
                 <?php
+                //get the messages from the database and display them
                 $username = $_SESSION['username'];
                 $uid = $_SESSION['userid'];
 
+                //check if there is a message between the user and the sender in the database
                 $from = $_GET['from'];
                 $isInbox = isUserInInbox($conn, $uid, $from, $ad_id);
 
+                //if there is no message, redirect to inbox
                 if (!$isInbox) {
                     header("location: inbox.php?error=feil");
                 }
@@ -43,8 +53,7 @@ include 'includes/dbh.inc.php';
                 $sql = "SELECT message, created, sender FROM messages WHERE receiver = ? AND sender = ? AND ad_id = ? OR receiver = ? AND sender = ? and ad_id = ? ORDER BY created ASC";
                 $stmt = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt, $sql)) {
-                    header("Location: index.php?error=sqlerror");
-                    exit();
+                    header("Location: index.php?error=noegikkgalt");
                 } else {
                     mysqli_stmt_bind_param($stmt, "ssssss", $username, $sender, $ad_id, $sender, $username, $ad_id);
                     mysqli_stmt_execute($stmt);
@@ -72,6 +81,8 @@ include 'includes/dbh.inc.php';
 
                 <hr style="border-top: 1px;">
             </div>
+
+            <!-- Message form -->
             <div class="message-form-form">
                 <form action="includes/sendmsg.inc.php" method="post">
                     <label for="msg">Skriv:</label>
@@ -81,24 +92,6 @@ include 'includes/dbh.inc.php';
                     <input type="text" name="adid" value="<?php echo $ad_id ?>" style="display:none;">
                 </form>
             </div>
-            <?php
-            // Error messages
-            if (isset($_GET["error"])) {
-                if ($_GET["error"] == "emptyinput") {
-                    echo "<p>Fyll ut alle feltene!</p>";
-                } else if ($_GET["error"] == "invalidemail") {
-                    echo "<p>Skriv in riktig email!</p>";
-                } else if ($_GET["error"] == "passwordsdontmatch") {
-                    echo "<p>Passord matcher ikke!</p>";
-                } else if ($_GET["error"] == "stmtfailed") {
-                    echo "<p>Noe gikk galt!</p>";
-                } else if ($_GET["error"] == "emailtaken") {
-                    echo "<p>Email er allerede registrert!</p>";
-                } else if ($_GET["error"] == "none") {
-                    echo "<p>Du er noe registrert!</p>";
-                }
-            }
-            ?>
 
 
         </section>

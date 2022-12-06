@@ -3,17 +3,23 @@ include_once 'header.php';
 include_once 'includes/dbh.inc.php';
 include_once 'includes/functions.inc.php';
 
+//if user is not logged in, redirect to login page
 if (!isset($_SESSION["userid"])) {
     header("location: login.php");
 }
 
+//get user id from session
 $user_id = $_SESSION["userid"];
+
+//get user info from database to display in form
 $user = getUser($conn, $user_id);
 $user_email = $user['usersEmail'];
 $user_name = $user['usersName'];
+$user_notif = $user['notif'];
 
 ?>
 
+<!-- form -->
 <section class="signup-form">
     <h2 class="hvdg">Endre din informasjon</h2>
     <div class="signup-form-form">
@@ -30,10 +36,14 @@ $user_name = $user['usersName'];
             <input type="password" name="pwdrepeat" placeholder="Gjenta Passord">
             <label for="notif">Varslinger</label>
             <input type="hidden" name="notif" value="0">
-            <input type="checkbox" name="notif" value="1" checked>
+            <input type="checkbox" name="notif" value="1" <?php if ($user_notif == 1) {
+                                                                echo 'CHECKED';
+                                                            } ?>>
             <button type="submit" name="submit">Lagre</button>
         </form>
     </div>
+
+
     <?php
     // Error messages
     if (isset($_GET["error"])) {
@@ -47,10 +57,13 @@ $user_name = $user['usersName'];
             echo "<p>Noe gikk galt!</p>";
         } else if ($_GET["error"] == "emailtaken") {
             echo "<p>Email er allerede registrert!</p>";
+        } else if ($_GET["error"] == "wrongpwd") {
+            echo "<p>Du har skrevet feil gammel passord!</p>";
         }
     }
     ?>
 </section>
+
 
 <?php
 include_once 'footer.php';

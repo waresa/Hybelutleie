@@ -1,9 +1,10 @@
+<!-- Page with the list of ads -->
+
 <?php
+include_once 'includes\dbh.inc.php';
 include 'header.php';
-include 'includes/dbh.inc.php';
 
 ?>
-
 
 <div class="search">
     <label>
@@ -16,9 +17,11 @@ include 'includes/dbh.inc.php';
 <div class="content">
     <div class="container">
         <?php
+        // If the user has searched for something, show the search results instead of all ads
         if (isset($_POST['search'])) {
             require 'includes/searchads.inc.php';
         } else {
+            // Show all ads
             require 'includes/allads.inc.php';
         }
         ?>

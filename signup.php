@@ -1,7 +1,10 @@
+<!-- Sign up page -->
+
 <?php
 include_once 'header.php';
 ?>
 
+<!-- form -->
 <section class="signup-form">
   <h2 class="hvdg">Registrer deg selv</h2>
   <div class="signup-form-form">

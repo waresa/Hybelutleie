@@ -1,12 +1,14 @@
 <?php
 session_start();
 
+//if submit button is clicked
 if (isset($_POST["submit"])) {
 
+    //get files needed
     require_once "dbh.inc.php";
     require_once 'functions.inc.php';
 
-    // // First we get the form data from the URL
+    // // First we get the form data from the POST
     $ad_id = $_POST["ad_id"];
     $title = $_POST["title"];
     $leie = $_POST["leie"];
@@ -22,7 +24,10 @@ if (isset($_POST["submit"])) {
     $depositum = $_POST["depositum"];
     $info = $_POST["info"];
 
+    //call function to edit ad
     editAd($conn, $title, $leie, $boligtype, $antallrom, $areal, $etasje, $adresse, $postnr, $poststed, $leieperiode, $ledigfra, $depositum, $info, $ad_id);
+
+    //redirect to myads.php with error message
     header("location: ../productpage.php?ad_id=$ad_id");
 } else {
     header("location: ../editad.php?ad_id=$ad_id?error=noegikkgalt");

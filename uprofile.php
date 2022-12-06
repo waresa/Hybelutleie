@@ -1,13 +1,17 @@
 <?php
 include_once 'includes/functions.inc.php';
-include_once 'header.php';
 include_once 'includes/dbh.inc.php';
+include_once 'header.php';
+
+//if user is not logged in, redirect to login
 if (!isset($_SESSION["userid"])) {
     header("location: login.php");
 }
 
+//if user is logged in, set the user id
 $user_id = $_SESSION["userid"];
 
+//get user info to show on profile page
 $user = getUser($conn, $user_id);
 $user_email = $user['usersEmail'];
 $user_name = $user['usersName'];

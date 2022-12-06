@@ -7,7 +7,7 @@ include_once 'header.php';
   <div class="signup-form-form">
     <form action="includes/login.inc.php" method="post">
       <label for="email">E-post</label>
-      <input type="text" name="email" placeholder="Email">
+      <input type="email" name="email" placeholder="Email">
       <label for="pwd">Passord</label>
       <input type="password" name="pwd" placeholder="Passord">
       <button type="submit" name="submit">Logg inn</button>

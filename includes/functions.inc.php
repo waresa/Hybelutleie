@@ -36,6 +36,27 @@ function pwdMatch($pwd, $pwdrepeat)
 	return $result;
 }
 
+// Check if old password matches
+function oldPwdMatch($conn, $oldpwd, $user_id)
+{
+	$sql = "SELECT * FROM users WHERE usersId = ?;";
+	$stmt = mysqli_stmt_init($conn);
+	mysqli_stmt_prepare($stmt, $sql);
+	mysqli_stmt_bind_param($stmt, "s", $user_id);
+	mysqli_stmt_execute($stmt);
+
+	$resultData = mysqli_stmt_get_result($stmt);
+
+	if ($row = mysqli_fetch_assoc($resultData)) {
+		$pwdCheck = password_verify($oldpwd, $row["usersPwd"]);
+		if ($pwdCheck === false) {
+			return true;
+		} else if ($pwdCheck === true) {
+			return false;
+		}
+	}
+}
+
 // Check if email is in database, if so then return data
 function emailExists($conn, $email)
 {
@@ -70,6 +91,26 @@ function createUser($conn, $name, $email, $pwd, $notif)
 	// header("location: ../login.php?error=none");
 }
 
+//function to get the userId of a user from the users table using the username
+function getUserID($conn, $username)
+{
+	$sql = "SELECT usersid FROM users WHERE usersname = ?;";
+	$stmt = mysqli_stmt_init($conn);
+	mysqli_stmt_prepare($stmt, $sql);
+
+	mysqli_stmt_bind_param($stmt, "s", $username);
+	mysqli_stmt_execute($stmt);
+
+
+	$resultData = mysqli_stmt_get_result($stmt);
+
+	if ($row = mysqli_fetch_assoc($resultData)) {
+		return $row;
+	} else {
+		$result = false;
+		return $result;
+	}
+}
 
 //edit user 
 function editUser($conn, $name, $email, $pwd, $notif, $user_id)
@@ -91,6 +132,7 @@ function deleteEmail($conn, $user_id)
 	mysqli_stmt_bind_param($stmt, "s", $user_id);
 	mysqli_stmt_execute($stmt);
 }
+
 
 function changeEmail($conn, $email, $user_id)
 {
@@ -141,6 +183,7 @@ function loginUser($conn, $email, $pwd)
 	}
 }
 
+// Check if ther is a conversation between two users
 function isUserInInbox($conn, $user_id, $uname, $ad_id)
 {
 	$sql = "SELECT * FROM user_inbox WHERE usersid = ? AND uname = ? AND ad_id = ?;";
@@ -160,6 +203,7 @@ function isUserInInbox($conn, $user_id, $uname, $ad_id)
 	}
 }
 
+// Get a specific user
 function getUser($conn, $user_id)
 {
 	$sql = "SELECT * FROM users WHERE usersId = ?;";
@@ -180,9 +224,73 @@ function getUser($conn, $user_id)
 	}
 }
 
+//change user notification
+function changeNotif($conn, $notif, $user_id)
+{
+	$sql = "UPDATE users SET notif = ? WHERE usersId = ?;";
+	$stmt = mysqli_stmt_init($conn);
+	mysqli_stmt_prepare($stmt, $sql);
+	mysqli_stmt_bind_param($stmt, "ss", $notif, $user_id);
+	mysqli_stmt_execute($stmt);
+}
+
+// Get all users that want notifications
+function getAllUserIDsWithNotifOn($conn)
+{
+	$sql = "SELECT usersId FROM users WHERE notif = 1;";
+	$stmt = mysqli_stmt_init($conn);
+	mysqli_stmt_prepare($stmt, $sql);
+	mysqli_stmt_execute($stmt);
+
+	$resultData = mysqli_stmt_get_result($stmt);
+
+	$users = array();
+	while ($row = mysqli_fetch_assoc($resultData)) {
+		$users[] = $row;
+	}
+	return $users;
+}
+
+// Get all a specific users wants
+function getUserWants($conn, $user_id)
+{
+	$sql = "SELECT wants FROM renters WHERE usersid = ?;";
+	$stmt = mysqli_stmt_init($conn);
+	mysqli_stmt_prepare($stmt, $sql);
+
+	mysqli_stmt_bind_param($stmt, "s", $user_id);
+	mysqli_stmt_execute($stmt);
+
+	$resultData = mysqli_stmt_get_result($stmt);
+
+	$wants = array();
+	while ($row = mysqli_fetch_assoc($resultData)) {
+		$wants[] = $row;
+	}
+	return $wants;
+}
+
+// Get all users and their wants who have notifications on
+function getAllUserWants($conn)
+{
+	$sql = "SELECT usersId, wants FROM renters WHERE usersId IN (SELECT usersId FROM users WHERE notif = 1);";
+	$stmt = mysqli_stmt_init($conn);
+	mysqli_stmt_prepare($stmt, $sql);
+	mysqli_stmt_execute($stmt);
+
+	$resultData = mysqli_stmt_get_result($stmt);
+
+	$users = array();
+	while ($row = mysqli_fetch_assoc($resultData)) {
+		$users[] = $row;
+	}
+	return $users;
+}
+
 
 //AD functions
 
+//Create an ad
 function createAd($conn, $tilte, $leie, $boligtype, $antallrom, $areal, $etasje, $adresse, $postnr, $poststed, $leieperiode, $ledigfra, $info, $depositum, $usersId)
 {
 	$sql = "INSERT INTO ad (title, leie, boligtype, rom, areal, etasje, adresse, postnr, poststed, leieperiode, ledigfra, info, depositum, usersId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -192,6 +300,7 @@ function createAd($conn, $tilte, $leie, $boligtype, $antallrom, $areal, $etasje,
 	mysqli_stmt_execute($stmt);
 }
 
+//edit an ad
 function editAd($conn, $tilte, $leie, $boligtype, $antallrom, $areal, $etasje, $adresse, $postnr, $poststed, $leieperiode, $ledigfra, $info, $depositum, $ad_id)
 {
 	$sql = "UPDATE ad SET title = ?, leie = ?, boligtype = ?, rom = ?, areal = ?, etasje = ?, adresse = ?, postnr = ?, poststed = ?, leieperiode = ?, ledigfra = ?, info = ?, depositum = ? WHERE ad_id = ?;";
@@ -202,7 +311,7 @@ function editAd($conn, $tilte, $leie, $boligtype, $antallrom, $areal, $etasje, $
 }
 
 
-
+//add facilities to ad
 function addFacilities($conn, $facilities)
 {
 	$sql = "INSERT INTO fasiliteter (fasilitet, ad_id) VALUES (?, (SELECT MAX(ad_id) FROM ad));";
@@ -212,6 +321,7 @@ function addFacilities($conn, $facilities)
 	mysqli_stmt_execute($stmt);
 }
 
+//create user renter profile
 function createRenter($conn, $budget, $wants, $usersId)
 {
 	$sql = "INSERT IGNORE INTO renters (budget, wants, usersId) VALUES (?, ?, ?);";
@@ -221,6 +331,7 @@ function createRenter($conn, $budget, $wants, $usersId)
 	mysqli_stmt_execute($stmt);
 }
 
+//edit user renter profile
 function editRenter($conn, $budget, $wants, $user_id)
 {
 	$sql = "UPDATE renters SET budget = ?, wants = ? WHERE usersId = ?;";
@@ -230,6 +341,7 @@ function editRenter($conn, $budget, $wants, $user_id)
 	mysqli_stmt_execute($stmt);
 }
 
+//get a specific renter
 function getRenter($conn, $user_id)
 {
 	$sql = "SELECT * FROM renters WHERE usersId = ?;";
@@ -265,15 +377,17 @@ function getAd($conn, $ad_id)
 	}
 }
 
+//delete ad by changing isDeleted to 1
 function deleteAd($conn, $ad_id)
 {
-	$sql = "DELETE FROM ad WHERE ad_id = ?;";
+	$sql = "UPDATE ad SET isDeleted = 1 WHERE ad_id = ?;";
 	$stmt = mysqli_stmt_init($conn);
 	mysqli_stmt_prepare($stmt, $sql);
 	mysqli_stmt_bind_param($stmt, "s", $ad_id);
 	mysqli_stmt_execute($stmt);
 }
 
+//return ad if ad_id and usersId matches
 function isMyAd($conn, $ad_id, $usersId)
 {
 	$sql = "SELECT * FROM ad WHERE ad_id = ? AND usersId = ?;";
@@ -290,6 +404,8 @@ function isMyAd($conn, $ad_id, $usersId)
 	}
 }
 
+
+//get all ads
 function getAllAdIds($conn)
 {
 	$sql = "SELECT * FROM ad;";
@@ -305,6 +421,7 @@ function getAllAdIds($conn)
 	}
 }
 
+//get the last ad using max ad_id
 function getLastAd($conn)
 {
 	$sql = "SELECT ad_id FROM ad WHERE ad_id = (SELECT MAX(ad_id) FROM ad);";
@@ -321,6 +438,7 @@ function getLastAd($conn)
 	}
 }
 
+//get all ad info from ad table and fasiliteter table
 function getAdInfo($conn, $ad_id)
 {
 	$sql = "SELECT ad.*, fasiliteter.* FROM ad inner JOIN fasiliteter on ad.ad_id = fasiliteter.ad_id WHERE ad.ad_id = ?;";
@@ -341,6 +459,7 @@ function getAdInfo($conn, $ad_id)
 	}
 }
 
+//get all ad images from images table
 function getAdImgs($conn, $ad_id)
 {
 	$sql = "SELECT * from images where ad_id = ?;";
@@ -359,6 +478,7 @@ function getAdImgs($conn, $ad_id)
 	}
 }
 
+//get all of a users ads
 function getUserAd($conn, $user_id)
 {
 	$sql = "SELECT * FROM ad WHERE usersId = ?;";
@@ -377,17 +497,21 @@ function getUserAd($conn, $user_id)
 	}
 }
 
-
+//function to upload images for an ad and insert them into the img folder and the images table
 function uploadAdImgs($conn, $files, $ad_id)
 {
 	$ins = 0;
+	//loop through all files and insert them into the img folder and the images table
 	foreach ($files['upload']['name'] as $key => $name) {
 
 		$newFilename = $ad_id . "_" . $name;
 
+		//create img folder if it does not exist
 		if (!dir('img'))
 			mkdir('img');
+		//move file to img folder
 		$move = move_uploaded_file($_FILES['upload']['tmp_name'][$key], 'img/' . $newFilename);
+		//if file is moved insert it into the images table
 		if ($move) {
 			$sql = "INSERT INTO images (file_name, ad_id) VALUES (?, ?);";
 			$stmt = mysqli_stmt_init($conn);
@@ -398,15 +522,16 @@ function uploadAdImgs($conn, $files, $ad_id)
 				$ins++;
 			}
 		}
+		//if all files are inserted redirect to my ads page
 		if (count($files['upload']['name']) == $ins) {
-			header("location: ../createad.php?error=none");
-			echo "$newFilename";
+			header("location: ../myads.php?error=none");
 		} else {
 			header("location: ../createad.php?error=uploadfailed");
 		}
 	}
 }
 
+//function to get information about the user who created the ad
 function getAdUserInfo($conn, $ad_id)
 {
 	$sql = "SELECT users.*, ad.* FROM users INNER JOIN ad ON users.usersid = ad.usersid WHERE ad.ad_id = ?;";
@@ -426,6 +551,7 @@ function getAdUserInfo($conn, $ad_id)
 	}
 }
 
+//function to get the first image of an ad
 function getFirstImgOfAd($conn, $ad_id)
 {
 	$sql = "SELECT * FROM images WHERE ad_id = ? LIMIT 1;";
@@ -445,7 +571,28 @@ function getFirstImgOfAd($conn, $ad_id)
 	}
 }
 
+//function to check if an ad is created by the user who is logged in
+function isAdByUser($conn, $ad_id, $user_id)
+{
+	$sql = "SELECT * FROM ad WHERE ad_id = ? AND usersId = ?;";
+	$stmt = mysqli_stmt_init($conn);
+	mysqli_stmt_prepare($stmt, $sql);
+	mysqli_stmt_bind_param($stmt, "ss", $ad_id, $user_id);
+	mysqli_stmt_execute($stmt);
+
+	$resultData = mysqli_stmt_get_result($stmt);
+
+	if ($row = mysqli_fetch_assoc($resultData)) {
+		return $row;
+	} else {
+		$result = false;
+		return $result;
+	}
+}
+
 //MESSAGE FUNCTIONS
+
+//function to send a message or insert a message into the messages table
 function sendMessage($conn, $sender, $receiver, $message, $ad_id)
 {
 	$sql = "INSERT INTO messages (receiver, sender, message, ad_id) VALUES (?, ?, ?, ?);";
@@ -455,6 +602,7 @@ function sendMessage($conn, $sender, $receiver, $message, $ad_id)
 	mysqli_stmt_execute($stmt);
 }
 
+//function to insert a conversation into the user_inbox table
 function insertInbox($conn, $user_id, $uname, $ad_id)
 {
 	$sql = "INSERT IGNORE INTO user_inbox (usersId, uname, ad_id) VALUES (?, ?, ?);";
@@ -465,17 +613,7 @@ function insertInbox($conn, $user_id, $uname, $ad_id)
 	mysqli_stmt_close($stmt);
 }
 
-// function insertInbox($conn, $user_id, $uname, $ad_title)
-// {
-// 	$sql = "INSERT IGNORE INTO user_inbox (usersId, uname, ad_title) VALUES (?, ?, ?);";
-// 	$stmt = mysqli_stmt_init($conn);
-// 	mysqli_stmt_prepare($stmt, $sql);
-// 	mysqli_stmt_bind_param($stmt, "sss", $user_id, $uname, $ad_title);
-// 	mysqli_stmt_execute($stmt);
-// 	mysqli_stmt_close($stmt);
-// }
-
-
+//function to get all the conversations of a user from the user_inbox table
 function getUsersInbox($conn, $user_id)
 {
 	$sql = "SELECT * FROM user_inbox WHERE usersId = ?;";
@@ -494,6 +632,7 @@ function getUsersInbox($conn, $user_id)
 	}
 }
 
+//function to get the messages between two users from the messages table
 function getMessageInfo($conn, $user_id, $sender)
 {
 	$sql = "SELECT message, created, sender FROM messages where sender = ? and receiver = ? or sender = ? and receiver = ? order by created asc;";
@@ -507,26 +646,6 @@ function getMessageInfo($conn, $user_id, $sender)
 	$resultData = mysqli_stmt_get_result($stmt);
 
 	if ($row = mysqli_fetch_all($resultData)) {
-		return $row;
-	} else {
-		$result = false;
-		return $result;
-	}
-}
-
-function getUserID($conn, $username)
-{
-	$sql = "SELECT usersid FROM users WHERE usersname = ?;";
-	$stmt = mysqli_stmt_init($conn);
-	mysqli_stmt_prepare($stmt, $sql);
-
-	mysqli_stmt_bind_param($stmt, "s", $username);
-	mysqli_stmt_execute($stmt);
-
-
-	$resultData = mysqli_stmt_get_result($stmt);
-
-	if ($row = mysqli_fetch_assoc($resultData)) {
 		return $row;
 	} else {
 		$result = false;

@@ -2,17 +2,32 @@
 include_once 'header.php';
 include_once 'includes/dbh.inc.php';
 
+//if user is not logged in, redirect to login page
+if (!isset($_SESSION['userid'])) {
+    header("Location:login.php");
+}
+
+//get to id from url and set the user as uid
 $to_idtmp = $_GET['to_id'];
 $uid = $_SESSION['userid'];
 
+//get user name of the message receiver
 $un = getUser($conn, $to_idtmp);
 $to_name = $un['usersName'];
+
+//get ad id from url
 $ad_id = $_GET['ad_id'];
+
+//if the ad is not by the user, or the ad id and to id is not set, redirect to index
+if (!isset($_GET['to_id']) || !isset($ad_id) || !isAdByUser($conn, $ad_id, $to_idtmp)) {
+    header("Location: index.php");
+}
 ?>
 
 <section class="signup-form" id="msgform">
     <div class="block1">
         <?php
+        //get ad info and show it in the message form
         $imgpath = getFirstImgOfAd($conn, $ad_id);
         $row = getAdInfo($conn, $ad_id);
         echo " 
@@ -26,6 +41,8 @@ $ad_id = $_GET['ad_id'];
         <div class='productprice'>" . $row['leie'] . " kr" . "</div>" . "</div>" . "</a>";
         ?>
     </div>
+
+    <!-- message form -->
     <div class="block2" id="msgb2">
         <div class="signup-form-form">
             <form action="includes/sendmsg.inc.php" method="post">
@@ -38,24 +55,6 @@ $ad_id = $_GET['ad_id'];
             </form>
         </div>
     </div>
-    <?php
-    // Error messages
-    if (isset($_GET["error"])) {
-        if ($_GET["error"] == "emptyinput") {
-            echo "<p>Fyll ut alle feltene!</p>";
-        } else if ($_GET["error"] == "invalidemail") {
-            echo "<p>Skriv in riktig email!</p>";
-        } else if ($_GET["error"] == "passwordsdontmatch") {
-            echo "<p>Passord matcher ikke!</p>";
-        } else if ($_GET["error"] == "stmtfailed") {
-            echo "<p>Noe gikk galt!</p>";
-        } else if ($_GET["error"] == "emailtaken") {
-            echo "<p>Email er allerede registrert!</p>";
-        } else if ($_GET["error"] == "none") {
-            echo "<p>Du er noe registrert!</p>";
-        }
-    }
-    ?>
 </section>
 
 <?php

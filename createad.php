@@ -1,12 +1,19 @@
+<!-- The create ad page -->
+
 <?php
 include_once 'header.php';
+
+//if user is not logged in, redirect to login page
 if (!isset($_SESSION['userid'])) {
     header("Location:login.php");
 }
 ?>
 
 <section class="signup-form" id="createad">
+    <!-- Header -->
     <h2 class="hvdg">Lag ny annonse</h2>
+
+    <!-- Form -->
     <div class="signup-form-form">
         <form action="includes/createad.inc.php" method="post" enctype="multipart/form-data">
             <label for="upl">Last opp bilder for annonsen: </label>
@@ -14,35 +21,36 @@ if (!isset($_SESSION['userid'])) {
             <label for="title">Tittel</label>
             <input type="text" name="title" placeholder="Tittel" required>
             <label for="leie">Månedsleie</label>
-            <input type="text" name="leie" placeholder="Månedsleie">
+            <input type="number" name="leie" placeholder="Månedsleie" required>
             <label for="depositum">Depositum</label>
-            <input type="text" name="depositum" placeholder="Depositum">
+            <input type="number" name="depositum" placeholder="Depositum" required>
             <label for="boligtype">Boligtype</label>
             <select name="boligtype" id="boligtype">
+                <option value=""> </option>
                 <option value="Hybel">Hybel</option>
                 <option value="Leilighet">Leilighet</option>
                 <option value="Enebolig">Enebolig</option>
                 <option value="Rekkehus">Rekkehus</option>
             </select>
             <label for="antallrom">Antall Soverom</label>
-            <input type="number" name="antallrom" placeholder="Antall Soverom">
+            <input type="number" name="antallrom" placeholder="Antall Soverom" required>
             <label for="areal">Areal</label>
-            <input type="number" name="areal" placeholder="Areal">
+            <input type="number" name="areal" placeholder="Areal" required>
             <label for="etasje">Etasje</label>
             <input type="number" name="etasje" placeholder="Etasje">
             <label for="adresse">Adresse</label>
-            <input type="text" name="adresse" placeholder="Adresse">
+            <input type="text" name="adresse" placeholder="Adresse" required>
             <label for="postnr">Postnummer</label>
-            <input type="text" name="postnr" placeholder="Postnummer">
+            <input type="text" name="postnr" placeholder="Postnummer" required>
             <label for="poststed">Poststed</label>
-            <input type="text" name="poststed" placeholder="Poststed">
+            <input type="text" name="poststed" placeholder="Poststed" required>
             <label for="leieperiode">Leiepeiode</label>
             <select name="leieperiode" id="leieperiode">
                 <option value="langtidsleie">Langtidsleie</option>
                 <option value="korttidsleie">Korttidsleie</option>
             </select>
             <label for="ledigfra">Ledig fra</label>
-            <input type="date" name="ledigfra" placeholder="Ledig fra: ">
+            <input type="date" name="ledigfra" placeholder="Ledig fra: " required>
             <fieldset>
                 <legend>Fasiliteter</legend>
                 <label for="Møbler">Møbler</label>
@@ -59,7 +67,7 @@ if (!isset($_SESSION['userid'])) {
                 <input type="checkbox" name="fasiliteter[]" value="Husdyr tillatt">
                 <label for="Røyking tillatt">Røyking tillatt</label>
                 <input type="checkbox" name="fasiliteter[]" value="Røyking tillatt">
-                <input type="hidden" name="fasiliteter[]" value="Ikke oppitt">
+                <input type="hidden" name="fasiliteter[]" value="">
 
             </fieldset>
             <label for="info">Om boligen: </label>
@@ -67,25 +75,6 @@ if (!isset($_SESSION['userid'])) {
             <button type="submit" name="submit">Lag</button>
         </form>
     </div>
-    <?php
-    // Error messages
-    // if (isset($_GET["error"])) {
-    //     if ($_GET["error"] == "emptyinput") {
-    //         echo "<p>Fyll ut alle feltene!</p>";
-    //     } else if ($_GET["error"] == "invalidemail") {
-    //         echo "<p>Skriv in riktig email!</p>";
-    //     } else if ($_GET["error"] == "passwordsdontmatch") {
-    //         echo "<p>Passord matcher ikke!</p>";
-    //     } else if ($_GET["error"] == "stmtfailed") {
-    //         echo "<p>Noe gikk galt!</p>";
-    //     } else if ($_GET["error"] == "emailtaken") {
-    //         echo "<p>Email er allerede registrert!</p>";
-    //     } else if ($_GET["error"] == "none") {
-    //         echo "<p>Du er noe registrert!</p>";
-    //     }
-    // }
-    // 
-    ?>
 </section>
 
 <?php

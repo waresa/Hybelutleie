@@ -2,8 +2,10 @@
 include 'header.php';
 include 'includes/dbh.inc.php';
 
+//get ad id from url
 $ad_id = $_GET['ad_id'];
 
+//if user is logged in, set the user id
 if (isset($_SESSION['userid'])) {
     $user_id = $_SESSION['userid'];
 }
@@ -12,14 +14,15 @@ if (isset($_SESSION['userid'])) {
 //chceck if ad exists
 $ad = getAllAdIds($conn);
 $ads = array();
-$numodads = count($ad);
+$numOfAds = count($ad);
 $i = 0;
-while ($i < $numodads) {
+while ($i < $numOfAds) {
     $a = $ad[$i][0];
     $ads[$i] = $a;
     $i++;
 }
 
+//if ad does not exist, redirect to adlist
 if (!in_array($ad_id, $ads)) {
     header("Location:adlist.php");
 }
@@ -29,12 +32,16 @@ if (!in_array($ad_id, $ads)) {
 
     <?php
 
+    //get ad info
     $row1 = getAdInfo($conn, $ad_id);
+    //get if ad is deleted
+    $isDeleted = $row1['isDeleted']
     ?>
 
     <div class="item-image-parent">
         <div class="item-list-vertical">
             <?php
+            //get all images of ad and show them
             $img = getAdImgs($conn, $ad_id);
             $j = 0;
             while ($j < count($img)) {
@@ -91,37 +98,48 @@ if (!in_array($ad_id, $ads)) {
 
 
         <?php
-        if (isMyAd($conn, $ad_id, $user_id)) { ?>
 
-            <div class="kontakt">
-                <a class="kntkt" <?php if (isset($_SESSION['userid'])) { ?> href="editad.php?ad_id=<?php echo $ad_id; ?>"> <?php }
-                                                                                                                            ?> Rediger
-                </a>
-                <form action="includes/deletead.inc.php" method="post" enctype="multipart/form-data">
-                    <button type="submit" name="submit">Slett Annonse</button>
-                    <input type="hidden" name="ad_id" value="<?php echo $ad_id; ?>">
-                </form>
+        //if ad is not deleted
+        if ($isDeleted == 0) {
 
-            </div>
+            //if user is logged in and is the owner of the ad, show edit and delete button
+            if (isMyAd($conn, $ad_id, $user_id)) { ?>
 
-        <?php
-        } else { ?>
-            <div id="uname">Postet av: <?php
-                                        $un = getUser($conn, $row1['usersId']);
-                                        echo $un['usersName'];
-                                        ?></div>
-            <div class="kontakt">
-                <a class="kntkt" <?php if (isset($_SESSION['userid'])) { ?> href="sendmsg.php?ad_id=<?php echo $ad_id . "&to_id=" . $to_id; ?>"> <?php } else { ?> href="login.php"> <?php }
-                                                                                                                                                                                        ?> Kontakt
-                </a>
+                <div class="kontakt">
+                    <a class="kntkt" <?php if (isset($_SESSION['userid'])) { ?> href="editad.php?ad_id=<?php echo $ad_id; ?>"> <?php }
+                                                                                                                                ?> Rediger
+                    </a>
+                    <form action="includes/deletead.inc.php" method="post" enctype="multipart/form-data">
+                        <button type="submit" name="submit">Slett Annonse</button>
+                        <input type="hidden" name="ad_id" value="<?php echo $ad_id; ?>">
+                    </form>
+
+                </div>
+
+            <?php
+            } else {
+                //if user is logged in and is not the owner of the ad, show contact button
+            ?>
+                <div id="uname">Postet av: <?php
+                                            $un = getUser($conn, $row1['usersId']);
+                                            echo $un['usersName'];
+                                            ?></div>
+                <div class="kontakt">
+                    <a class="kntkt" <?php if (isset($_SESSION['userid'])) { ?> href="sendmsg.php?ad_id=<?php echo $ad_id . "&to_id=" . $to_id; ?>"> <?php } else { ?> href="login.php"> <?php }
+                                                                                                                                                                                            ?> Kontakt
+                    </a>
+                </div>
+            <?php }
+        } else {
+            //if ad is deleted, show message
+            ?>
+            <div>
+                <p>Denne annonsen er slettet</p>
             </div>
         <?php }
         ?>
 
-
-
-
-
+        <!-- SCRIPT from map box for displaying the adress on a map -->
         <script>
             var address = <?php echo (json_encode($address)); ?>;
             mapboxgl.accessToken = 'pk.eyJ1Ijoid2FyZXNhIiwiYSI6ImNsYXRvaW9jMzAyOHkzcm55M291emFzMnEifQ.V02tpKc9ruk40khemdFumQ';

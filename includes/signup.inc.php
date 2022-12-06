@@ -2,7 +2,7 @@
 
 if (isset($_POST["submit"])) {
 
-  // First we get the form data from the URL
+  // First we get the form data from the POST
   $name = $_POST["name"];
   $email = $_POST["email"];
   $pwd = $_POST["pwd"];
@@ -42,8 +42,9 @@ if (isset($_POST["submit"])) {
 
   // Now we insert the user into the database
   createUser($conn, $name, $email, $pwd, $notif);
+
+  //redirect to login.php with error message
   header("location: ../login.php?error=none");
 } else {
   header("location: ../signup.php");
-  exit();
 }

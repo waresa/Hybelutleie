@@ -2,7 +2,7 @@
 session_start();
 if (isset($_POST["submit"])) {
 
-    // First we get the form data
+    // First we get the form POST
     $name = $_POST["name"];
     $email = $_POST["email"];
     $oldPwd = $_POST["oldpwd"];
@@ -11,11 +11,9 @@ if (isset($_POST["submit"])) {
     $user_id = $_SESSION["userid"];
     $notif = $_POST["notif"];
 
-    // Then we run a bunch of error handlers to catch any user mistakes we can (you can add more than I did)
-    // These functions can be found in functions.inc.php
-
     require_once "dbh.inc.php";
     require_once 'functions.inc.php';
+
 
     // We set the functions "!== false" since "=== true" has a risk of giving us the wrong outcome
     if (emptyInputSignup($name, $email, $pwd, $pwdRepeat) !== false) {
@@ -34,18 +32,28 @@ if (isset($_POST["submit"])) {
         exit();
     }
 
+    // Check if old password is correct
+    if (oldPwdMatch($conn, $oldPwd, $user_id) !== false) {
+        header("location: ../editprofile.php?error=wrongpwd");
+        exit();
+    }
+
+    //We delete email before we check if it already exists in the database incase the user changes their email to an email that already exists
     deleteEmail($conn, $user_id);
 
+    // Check if email already exists
     if (emailExists($conn, $email) !== false) {
         header("location: ../editprofile.php?error=emailtaken");
         exit();
     }
-    // Now we edit the user info in the database
+
+    // Now we edit the user info in the database by calling the function
     editUser($conn, $name, $email, $pwd, $notif, $user_id);
+
+    //redirect to uprofile.php with error message
     header("location: ../uprofile.php?error=none");
 } else {
-    //change email back if error
+    //change email back if error occurs
     changeEmail($conn, $user_id, $email);
     header("location: ../signup.php");
-    exit();
 }
