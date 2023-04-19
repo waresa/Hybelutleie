@@ -71,9 +71,9 @@ if (isset($_POST["submit"])) {
                 $smtpMail = "CHANGE THIS TO YOUR SMTP EMAIL";
                 $smtpPass = "CHANGE THIS TO YOUR SMTP EMAIL PASSWORD";
 
-                $mail->Username =  'waris.aslami2@gmail.com';
+                $mail->Username =  'CHANGE THIS TO YOUR SMTP EMAIL';
                 // Gmail Password
-                $mail->Password =  'bryacazwdzovpopf';
+                $mail->Password =  'CHANGE THIS TO YOUR SMTP PASSWORD';
                 $mail->Port = 587;
 
                 // email from which you want to send the email
